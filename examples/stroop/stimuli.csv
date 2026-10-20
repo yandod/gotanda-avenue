@@ -1,0 +1,9 @@
+id,word,ink,css_color,condition,correct_response
+s01,赤,赤,#d00000,congruent,f
+s02,青,青,#0050d0,congruent,g
+s03,緑,緑,#00a040,congruent,h
+s04,黄,黄,#d8a000,congruent,j
+s05,赤,青,#0050d0,incongruent,g
+s06,青,緑,#00a040,incongruent,h
+s07,緑,黄,#d8a000,incongruent,j
+s08,黄,赤,#d00000,incongruent,f

@@ -1,0 +1,4 @@
+id,audio,kind
+t1,assets/audio/tone_low.wav,pure_tone
+t2,assets/audio/tone_high.wav,pure_tone
+t3,assets/audio/chord.wav,chord

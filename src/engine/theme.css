@@ -1,0 +1,495 @@
+/*
+ * ルートの DESIGN.md を CSS にしたもの。値は DESIGN.md が正で、ここには DESIGN.md にない値を足さない。
+ *   - トークン（色・文字・余白・角丸）は :root の CSS 変数
+ *   - クラス名は DESIGN.md の components のキーと同じ
+ * main.ts で jspsych.css と survey.css のあとに読み込むので、同じ強さの指定はこちらが勝つ。
+ */
+
+/* ---------- トークン ---------- */
+:root {
+  /* 参加者の OS 設定でダークモードにならないよう、明るい表示に固定する */
+  color-scheme: light;
+
+  --color-primary: #5645d4;
+  --color-primary-pressed: #4534b3;
+  --color-on-primary: #ffffff;
+  --color-canvas: #ffffff;
+  --color-surface: #f6f5f4;
+  --color-hairline: #e5e3df;
+  --color-hairline-strong: #c8c4be;
+  --color-ink: #1a1a1a;
+  --color-ink-secondary: #5d5b54;
+  --color-trial-canvas: #ffffff;
+  --color-trial-ink: #000000;
+  --color-fixation: #000000;
+  --color-focus-ring: #5645d4;
+  --color-feedback-correct: #0075de;
+  --color-feedback-incorrect: #5d5b54;
+  --color-error: #c92a2a;
+
+  --font-sans: "Noto Sans JP Variable", "Noto Sans JP", sans-serif;
+  --font-mono: "Noto Sans Mono Variable", "Noto Sans Mono", monospace;
+
+  /* font: 太さ サイズ/行間 書体 */
+  --type-heading-1: 700 28px/1.4 var(--font-sans);
+  --type-heading-2: 700 22px/1.4 var(--font-sans);
+  --type-body: 400 18px/1.8 var(--font-sans);
+  --type-body-sm: 400 15px/1.7 var(--font-sans);
+  --type-caption: 400 13px/1.6 var(--font-sans);
+  --type-button: 500 17px/1.3 var(--font-sans);
+  --type-key-hint: 500 15px/1.3 var(--font-mono);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-xxl: 48px;
+  --space-section: 64px;
+
+  /* experiment/config.ts の display で上書きされる（engine が style 属性に書く） */
+  --display-background: var(--color-trial-canvas);
+  --display-stimulus-font-size: 48px;
+  --display-stimulus-width: auto;
+  --display-stimulus-height: auto;
+}
+
+/* ---------- 全体 ---------- */
+html,
+body {
+  margin: 0;
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font: var(--type-body);
+}
+
+/* 動きを入れない: 画面切り替えや押下の見た目が、刺激の提示時間に混ざらないようにする */
+*,
+*::before,
+*::after {
+  transition: none !important;
+  animation: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* フォーカスリングは消さない（キーボードで操作する参加者がいる） */
+:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+/* ---------- 画面（page, heading, caption-text） ---------- */
+.page {
+  box-sizing: border-box;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-xxl) var(--space-lg);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font: var(--type-body);
+}
+
+.heading {
+  margin: 0 0 var(--space-lg);
+  color: var(--color-ink);
+  font: var(--type-heading-1);
+}
+
+.caption-text {
+  color: var(--color-ink-secondary);
+  font: var(--type-caption);
+}
+
+/* 本文の書体にそろえたいとき（trial-stage の中の教示文など） */
+.text-body {
+  font: var(--type-body);
+}
+
+/* ---------- 枠線（outline 系） ---------- */
+.outline {
+  border: 1px solid var(--color-hairline-strong);
+}
+
+.outline-soft {
+  border: 1px solid var(--color-hairline);
+}
+
+.outline-focused {
+  outline: 2px solid var(--color-focus-ring);
+}
+
+/* ---------- ボタン ---------- */
+.button-primary,
+.button-secondary,
+.response-button,
+.jspsych-btn {
+  box-sizing: border-box;
+  margin: var(--space-xs);
+  border-radius: var(--radius-md);
+  font: var(--type-button);
+  cursor: pointer;
+  text-align: center;
+  white-space: normal;
+}
+
+.button-primary {
+  height: 52px;
+  padding: 14px 28px;
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.button-primary:active {
+  border-color: var(--color-primary-pressed);
+  background: var(--color-primary-pressed);
+  color: var(--color-on-primary);
+}
+
+.button-primary:disabled {
+  border-color: var(--color-hairline);
+  background: var(--color-hairline);
+  color: var(--color-ink-secondary);
+  cursor: not-allowed;
+}
+
+.button-secondary {
+  height: 52px;
+  padding: 14px 28px;
+  border: 1px solid var(--color-hairline-strong);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+/* jsPsych の標準ボタンは、反応ボタン（response-button）の見た目にそろえる */
+.response-button,
+.jspsych-btn {
+  min-height: 56px;
+  padding: 14px 20px;
+  border: 1px solid var(--color-hairline-strong);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+.response-button-selected,
+.response-button.is-selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+/* jsPsych 標準のホバー・押下の見た目を打ち消す（ホバー効果は付けない） */
+.jspsych-btn:hover,
+.jspsych-btn:active {
+  border-color: var(--color-hairline-strong);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+.jspsych-btn:disabled {
+  border-color: var(--color-hairline);
+  background: var(--color-hairline);
+  color: var(--color-ink-secondary);
+}
+
+/* button-primary を付けたボタンは jsPsych の標準指定より優先する */
+.jspsych-btn.button-primary,
+.jspsych-btn.button-primary:hover,
+.jspsych-btn.button-primary:active {
+  height: 52px;
+  min-height: 0;
+  padding: 14px 28px;
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.jspsych-btn.button-primary:active {
+  border-color: var(--color-primary-pressed);
+  background: var(--color-primary-pressed);
+}
+
+.jspsych-btn.button-secondary,
+.jspsych-btn.button-secondary:hover,
+.jspsych-btn.button-secondary:active {
+  height: 52px;
+  min-height: 0;
+  padding: 14px 28px;
+  border-color: var(--color-hairline-strong);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
+
+/* ---------- 教示・同意 ---------- */
+.instruction-card {
+  box-sizing: border-box;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: var(--type-body);
+  text-align: left;
+}
+
+.instruction-card p {
+  margin: 0 0 var(--space-md);
+}
+
+.instruction-card p:last-child {
+  margin-bottom: 0;
+}
+
+.consent-box {
+  padding: var(--space-lg);
+  border: 1px solid var(--color-hairline);
+  border-radius: var(--radius-md);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font: var(--type-body-sm);
+  white-space: pre-wrap;
+}
+
+.key-hint {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: var(--type-key-hint);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.actions > button {
+  margin: 0;
+}
+
+/* ---------- 試行画面 ---------- */
+/*
+ * css_classes: ["trial-stage"]（固視点は "fixation-cross"）を付けた試行で使う。
+ * jsPsych はこのクラスを #app ではなく、内側の .jspsych-content に付ける。
+ * そのため、背景色は :has() で #app 全体に塗り、文字の見た目は .jspsych-content に付く。
+ */
+.jspsych-display-element:has(.trial-stage, .fixation-cross) {
+  background: var(--display-background);
+}
+
+.trial-stage {
+  color: var(--color-trial-ink);
+  font: 500 var(--display-stimulus-font-size) / 1.3 var(--font-sans);
+}
+
+.jspsych-content.trial-stage,
+.jspsych-content.fixation-cross {
+  width: var(--display-stimulus-width);
+  min-height: var(--display-stimulus-height);
+}
+
+.trial-stage p {
+  margin: 0;
+}
+
+.fixation-cross {
+  color: var(--color-fixation);
+  font: 400 var(--display-stimulus-font-size) / 1 var(--font-mono);
+}
+
+.fixation-cross p {
+  margin: 0;
+}
+
+.feedback-correct {
+  color: var(--color-feedback-correct);
+  font: var(--type-heading-2);
+}
+
+.feedback-incorrect {
+  color: var(--color-feedback-incorrect);
+  font: var(--type-heading-2);
+}
+
+/* ---------- 質問紙の部品 ---------- */
+.likert-option {
+  padding: var(--space-sm);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font: var(--type-body-sm);
+}
+
+.likert-option-selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.text-input {
+  box-sizing: border-box;
+  height: 48px;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font: var(--type-body);
+}
+
+.text-input:focus-visible {
+  border-color: var(--color-focus-ring);
+}
+
+.progress-bar {
+  height: 6px;
+  border-radius: var(--radius-sm);
+  background: var(--color-hairline);
+}
+
+.progress-bar-fill {
+  height: 6px;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary);
+}
+
+.error-message {
+  background: var(--color-canvas);
+  color: var(--color-error);
+  font: var(--type-body-sm);
+}
+
+/* ---------- 終了画面 ---------- */
+.completion-code {
+  display: inline-block;
+  padding: var(--space-lg);
+  border: 1px dashed var(--color-hairline-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font: var(--type-heading-2);
+  letter-spacing: 0.15em;
+  user-select: all;
+}
+
+/* ---------- プレビューの帯（実験の部品ではないので、トークンだけで作る） ---------- */
+.preview-banner {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 2px var(--space-xs);
+  border-bottom: 1px solid var(--color-hairline-strong);
+  background: var(--color-surface);
+  color: var(--color-ink-secondary);
+  font: var(--type-caption);
+  text-align: center;
+  pointer-events: none;
+}
+
+/* ---------- jsPsych の書体と余白 ---------- */
+.jspsych-display-element,
+.jspsych-display-element input,
+.jspsych-display-element textarea,
+.jspsych-display-element select,
+.jspsych-btn {
+  font-family: var(--font-sans);
+}
+
+.jspsych-display-element {
+  font-size: 18px;
+  line-height: 1.8;
+}
+
+.jspsych-display-element kbd,
+.jspsych-display-element .jspsych-key {
+  border: 1px solid var(--color-hairline-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: none;
+  color: var(--color-ink);
+  font-family: var(--font-mono);
+}
+
+/* ---------- SurveyJS（質問紙） ---------- */
+/* SurveyJS は var(--sjs-…, 既定値) の形で色を決めているので、変数を上書きして DESIGN.md の色にそろえる */
+:root,
+.sd-root-modern,
+.sd-container-modern {
+  --sjs-font-family: var(--font-sans);
+  --sjs-font-size: 18px;
+  --sjs-corner-radius: var(--radius-md);
+
+  --sjs-general-backcolor: var(--color-canvas);
+  --sjs-general-backcolor-dim: var(--color-canvas);
+  --sjs-general-backcolor-dim-light: var(--color-canvas);
+  --sjs-general-backcolor-dim-dark: var(--color-surface);
+  --sjs-general-forecolor: var(--color-ink);
+  --sjs-general-forecolor-light: var(--color-ink-secondary);
+  --sjs-general-dim-forecolor: var(--color-ink);
+  --sjs-general-dim-forecolor-light: var(--color-ink-secondary);
+
+  --sjs-primary-backcolor: var(--color-primary);
+  --sjs-primary-backcolor-light: var(--color-surface);
+  --sjs-primary-backcolor-dark: var(--color-primary-pressed);
+  --sjs-primary-forecolor: var(--color-on-primary);
+  --sjs-primary-forecolor-light: var(--color-on-primary);
+
+  --sjs-secondary-backcolor: var(--color-surface);
+  --sjs-secondary-backcolor-light: var(--color-surface);
+  --sjs-secondary-backcolor-semi-light: var(--color-surface);
+  --sjs-secondary-forecolor: var(--color-ink);
+  --sjs-secondary-forecolor-light: var(--color-ink-secondary);
+
+  --sjs-border-default: var(--color-hairline-strong);
+  --sjs-border-light: var(--color-hairline);
+  --sjs-border-inside: var(--color-hairline);
+
+  /* 赤・緑は使わない。検証エラーだけ error の色にする */
+  --sjs-special-red: var(--color-error);
+  --sjs-special-red-light: var(--color-canvas);
+  --sjs-special-red-forecolor: var(--color-error);
+  --sjs-special-green: var(--color-primary);
+  --sjs-special-green-light: var(--color-surface);
+  --sjs-special-green-forecolor: var(--color-on-primary);
+  --sjs-special-blue: var(--color-primary);
+  --sjs-special-blue-light: var(--color-surface);
+  --sjs-special-blue-forecolor: var(--color-on-primary);
+  --sjs-special-yellow: var(--color-ink-secondary);
+  --sjs-special-yellow-light: var(--color-surface);
+  --sjs-special-yellow-forecolor: var(--color-ink);
+
+  /* 影は使わない。入力欄の枠は、影ではなく 1px の線で出す */
+  --sjs-shadow-small: 0 0 0 0 transparent;
+  --sjs-shadow-small-reset: 0 0 0 0 transparent;
+  --sjs-shadow-medium: 0 0 0 0 transparent;
+  --sjs-shadow-large: 0 0 0 0 transparent;
+  --sjs-shadow-inner: inset 0 0 0 1px var(--color-hairline-strong);
+  --sjs-shadow-inner-reset: inset 0 0 0 0 transparent;
+}
+
+/* ---------- 画面幅 ---------- */
+@media (max-width: 767px) {
+  .page {
+    padding: var(--space-xxl) var(--space-md);
+  }
+
+  .likert-group {
+    flex-direction: column;
+  }
+}
